@@ -21,6 +21,8 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'views/fund_budget_line_views.xml',
         'views/fund_incoming_views.xml',
         'views/fund_allocation_views.xml',
+        'views/fund_requisition_views.xml',
+        'views/fund_bill_views.xml',
     ],
     'demo': [],
     'test': [

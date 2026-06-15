@@ -8,5 +8,7 @@
         <menuitem id="menu_fund_expense_head" name="Expense Heads" parent="menu_fund_root" action="action_fund_expense_head"/>
         <menuitem id="menu_fund_budget_line" name="Budget Lines" parent="menu_fund_root" action="action_fund_budget_line"/>
         <menuitem id="menu_fund_allocation" name="Allocations" parent="menu_fund_root" action="action_fund_allocation"/>
+        <menuitem id="menu_fund_requisition" name="Requisitions" parent="menu_fund_root" action="action_fund_requisition"/>
+        <menuitem id="menu_fund_bill" name="Bills" parent="menu_fund_root" action="action_fund_bill"/>
     </data>
 </odoo>
