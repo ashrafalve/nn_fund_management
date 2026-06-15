@@ -117,12 +117,24 @@ class FundBudgetLine(models.Model):
     # ------------------------------------------------------------------ #
     # Compute methods
     # ------------------------------------------------------------------ #
-    @api.depends('allocation_ids.amount', 'allocation_ids.state')
+    @api.depends(
+        'allocation_ids.amount', 'allocation_ids.state',
+        'transfer_in_ids.amount', 'transfer_in_ids.state'
+    )
     def _compute_total_allocated(self):
+        # total_allocated = approved allocations + approved incoming transfers.
+        # When a transfer is approved, the destination's total_allocated
+        # and available increase by the transfer amount.
         for line in self:
-            line.total_allocated = sum(
-                alloc.amount for alloc in line.allocation_ids
-                if alloc.state == 'approved'
+            line.total_allocated = (
+                sum(
+                    alloc.amount for alloc in line.allocation_ids
+                    if alloc.state == 'approved'
+                )
+                + sum(
+                    tr.amount for tr in line.transfer_in_ids
+                    if tr.state == 'approved'
+                )
             )
 
     @api.depends('requisition_ids.requested_amount', 'requisition_ids.state')

@@ -10,5 +10,6 @@
         <menuitem id="menu_fund_allocation" name="Allocations" parent="menu_fund_root" action="action_fund_allocation"/>
         <menuitem id="menu_fund_requisition" name="Requisitions" parent="menu_fund_root" action="action_fund_requisition"/>
         <menuitem id="menu_fund_bill" name="Bills" parent="menu_fund_root" action="action_fund_bill"/>
+        <menuitem id="menu_fund_transfer" name="Transfers" parent="menu_fund_root" action="action_fund_transfer"/>
     </data>
 </odoo>
