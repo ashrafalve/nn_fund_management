@@ -120,3 +120,13 @@ class FundAllocation(models.Model):
     def _on_cancel(self, **kwargs):
         """Cancel from draft/submitted/gm_approval — release any holds."""
         self.ensure_one()
+
+    def unlink(self):
+        """Prevent deletion of approved/cancelled allocations."""
+        for rec in self:
+            if rec.state in ('approved', 'cancelled'):
+                raise UserError(_(
+                    "Cannot delete allocation '%s' in state '%s'. "
+                    "Use Cancel action to reverse."
+                ) % (rec.request_number, rec.state))
+        return super().unlink()

@@ -159,6 +159,15 @@ class FundRequisition(models.Model):
                 "Check 'Release Unused' to return funds to available."
             ) % self.remaining_billable_amount)
 
-        # Changing to 'closed' removes the requisition from approved_unspent
-        # and requisition_hold in the budget line computed fields.
         self.write({'state': 'closed'})
+        self.message_post(body=_("Requisition closed by %s.") % self.env.user.name)
+
+    def unlink(self):
+        """Prevent deletion of approved/closed/cancelled requisitions."""
+        for rec in self:
+            if rec.state in ('approved', 'closed', 'cancelled'):
+                raise UserError(_(
+                    "Cannot delete requisition '%s' in state '%s'. "
+                    "Use Cancel/Close actions to manage workflow."
+                ) % (rec.requisition_number, rec.state))
+        return super().unlink()

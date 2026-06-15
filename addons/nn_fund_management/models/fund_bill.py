@@ -107,6 +107,9 @@ class FundBill(models.Model):
             ) % (self.amount, self.requisition_id.remaining_billable_amount))
 
         self.write({'state': 'posted'})
+        self.message_post(body=_("Bill posted by %s for amount %s.") % (
+            self.env.user.name, self.amount
+        ))
 
     def action_cancel(self):
         """Cancel a posted bill and reverse balance effects.
@@ -121,7 +124,15 @@ class FundBill(models.Model):
             self.write({'state': 'cancelled'})
             return
         if self.state == 'posted':
-            # Reversing the post: state -> cancelled
-            # The compute formulas on fund.requisition.remaining_billable_amount
-            # and fund.budget.line.total_spent will automatically increment.
             self.write({'state': 'cancelled'})
+            self.message_post(body=_("Posted bill cancelled by %s. Balance effects reversed.") % self.env.user.name)
+
+    def unlink(self):
+        """Prevent deletion of confirmed incoming or posted/cancelled bills."""
+        for rec in self:
+            if rec.state in ('posted', 'cancelled'):
+                raise UserError(_(
+                    "Cannot delete bill '%s' in state '%s'. "
+                    "Use the Cancel action to reverse posted bills."
+                ) % (rec.bill_number, rec.state))
+        return super().unlink()

@@ -34,6 +34,7 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'tests/test_fund_requisition_bill.py',
         'tests/test_fund_transfer.py',
         'tests/test_fund_security.py',
+        'tests/test_fund_end_to_end_demo.py',
     ],
     'installable': True,
     'application': True,

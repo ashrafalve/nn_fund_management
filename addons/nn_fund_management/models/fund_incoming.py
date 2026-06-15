@@ -39,6 +39,16 @@ class FundIncoming(models.Model):
         ('confirmed', 'Confirmed'),
     ], string='State', required=True, default='draft', tracking=True)
 
+    def unlink(self):
+        """Prevent deletion of confirmed incoming funds."""
+        for rec in self:
+            if rec.state == 'confirmed':
+                raise UserError(_(
+                    "Cannot delete confirmed incoming fund '%s'. "
+                    "Use a reversal transaction instead."
+                ) % rec.transaction_reference or rec.id)
+        return super().unlink()
+
     def action_confirm(self):
         """Confirm a draft incoming fund.
 
@@ -50,3 +60,6 @@ class FundIncoming(models.Model):
         if self.state != 'draft':
             raise UserError(_("Only draft records can be confirmed."))
         self.write({'state': 'confirmed'})
+        self.message_post(body=_("Incoming fund confirmed by %s for amount %s.") % (
+            self.env.user.name, self.amount
+        ))

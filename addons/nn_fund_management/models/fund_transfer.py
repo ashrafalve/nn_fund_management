@@ -127,3 +127,13 @@ class FundTransfer(models.Model):
     def _on_cancel(self, **kwargs):
         """Cancel — release any hold on source."""
         self.ensure_one()
+
+    def unlink(self):
+        """Prevent deletion of approved/cancelled transfers."""
+        for rec in self:
+            if rec.state in ('approved', 'cancelled'):
+                raise UserError(_(
+                    "Cannot delete transfer '%s' in state '%s'. "
+                    "Use Cancel action to reverse."
+                ) % (rec.transfer_number, rec.state))
+        return super().unlink()

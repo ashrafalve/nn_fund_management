@@ -103,10 +103,14 @@ class FundApprovalMixin(models.AbstractModel):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft records can be submitted."))
-        self._check_approver_allowed('gm')  # submitter must at least be a valid user context
+        self._check_approver_allowed('gm')
         self._on_submit(comment=comment)
         self.state = 'submitted'
         self._append_approval_line('gm', 'submitted', comment)
+        msg = _("Record submitted by %s.") % self.env.user.name
+        if comment:
+            msg += _(" Comment: %s") % comment
+        self.message_post(body=msg)
 
     def action_gm_approve(self, comment=None):
         """Submitted -> GM Approval."""
@@ -117,6 +121,10 @@ class FundApprovalMixin(models.AbstractModel):
         self._on_gm_approve(comment=comment)
         self.state = 'gm_approval'
         self._append_approval_line('gm', 'approved', comment)
+        msg = _("GM approved by %s.") % self.env.user.name
+        if comment:
+            msg += _(" Comment: %s") % comment
+        self.message_post(body=msg)
 
     def action_md_approve(self, comment=None):
         """GM Approval -> Approved."""
@@ -127,6 +135,10 @@ class FundApprovalMixin(models.AbstractModel):
         self._on_md_approve(comment=comment)
         self.state = 'approved'
         self._append_approval_line('md', 'approved', comment)
+        msg = _("MD approved by %s.") % self.env.user.name
+        if comment:
+            msg += _(" Comment: %s") % comment
+        self.message_post(body=msg)
 
     def action_reject(self, comment=None):
         """Current -> Rejected."""
@@ -138,6 +150,10 @@ class FundApprovalMixin(models.AbstractModel):
         self._on_reject(comment=comment)
         self.state = 'rejected'
         self._append_approval_line(level, 'rejected', comment)
+        msg = _("Rejected by %s at %s level.") % (self.env.user.name, level.upper())
+        if comment:
+            msg += _(" Comment: %s") % comment
+        self.message_post(body=msg)
 
     def action_cancel(self, comment=None):
         """Draft/Submitted/GM Approval -> Cancelled."""
@@ -147,6 +163,10 @@ class FundApprovalMixin(models.AbstractModel):
         self._on_cancel(comment=comment)
         self.state = 'cancelled'
         self._append_approval_line('other', 'cancelled', comment)
+        msg = _("Cancelled by %s.") % self.env.user.name
+        if comment:
+            msg += _(" Comment: %s") % comment
+        self.message_post(body=msg)
 
     # ------------------------------------------------------------------ #
     # Hook methods — override in concrete models
