@@ -26,6 +26,7 @@
         'views/fund_requisition_views.xml',
         'views/fund_bill_views.xml',
         'views/fund_transfer_views.xml',
+        'views/fund_approval_rule_views.xml',
         'views/fund_menu.xml',
     ],
     'demo': [],

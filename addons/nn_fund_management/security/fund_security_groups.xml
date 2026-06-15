@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="module_category_fund_management" model="ir.module.category">
             <field name="name">Fund Management</field>
             <field name="description">Fund Management Categories</field>
