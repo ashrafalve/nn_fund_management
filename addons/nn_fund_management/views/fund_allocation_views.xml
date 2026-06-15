@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fund_allocation_tree" model="ir.ui.view">
+        <field name="name">fund.allocation.tree</field>
+        <field name="model">fund.allocation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="request_number"/>
+                <field name="request_date"/>
+                <field name="fund_account_id"/>
+                <field name="budget_line_id"/>
+                <field name="amount"/>
+                <field name="state"/>
+                <field name="requested_by"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_fund_allocation_form" model="ir.ui.view">
+        <field name="name">fund.allocation.form</field>
+        <field name="model">fund.allocation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Submit" type="object"
+                            class="btn-primary"
+                            attrs="{'invisible':[('state','not in',('draft',))]}"/>
+                    <button name="action_gm_approve" string="GM Approve" type="object"
+                            class="btn-success"
+                            attrs="{'invisible':[('state','!=','submitted')]}"/>
+                    <button name="action_md_approve" string="MD Approve" type="object"
+                            class="btn-success"
+                            attrs="{'invisible':[('state','!=','gm_approval')]}"/>
+                    <button name="action_reject" string="Reject" type="object"
+                            class="btn-danger"
+                            attrs="{'invisible':[('state','not in',('submitted','gm_approval'))]}"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            class="btn-secondary"
+                            attrs="{'invisible':[('state','not in',('draft','submitted','gm_approval'))]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="request_number" readonly="1"/>
+                        <field name="state" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="request_date"/>
+                        <field name="fund_account_id"/>
+                        <field name="budget_line_id"/>
+                        <field name="amount"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="purpose"/>
+                        <field name="requested_by"/>
+                        <field name="attachment"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_fund_allocation_search" model="ir.ui.view">
+        <field name="name">fund.allocation.search</field>
+        <field name="model">fund.allocation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="request_number"/>
+                <field name="state"/>
+                <field name="fund_account_id"/>
+                <field name="budget_line_id"/>
+                <filter string="My Requests" domain="[('requested_by','=',uid)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_fund_allocation" model="ir.actions.act_window">
+        <field name="name">Allocations</field>
+        <field name="res_model">fund.allocation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_fund_allocation_search"/>
+    </record>
+</odoo>

@@ -20,9 +20,13 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'views/fund_expense_head_views.xml',
         'views/fund_budget_line_views.xml',
         'views/fund_incoming_views.xml',
+        'views/fund_allocation_views.xml',
     ],
     'demo': [],
-    'test': ['tests/test_fund_approval_mixin.py'],
+    'test': [
+        'tests/test_fund_approval_mixin.py',
+        'tests/test_fund_balance_logic.py',
+    ],
     'installable': True,
     'application': True,
 }

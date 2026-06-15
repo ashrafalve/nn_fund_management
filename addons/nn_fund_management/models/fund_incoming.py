@@ -1,4 +1,6 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
+
 
 class FundIncoming(models.Model):
     _name = 'fund.incoming'
@@ -38,5 +40,13 @@ class FundIncoming(models.Model):
     ], string='State', required=True, default='draft', tracking=True)
 
     def action_confirm(self):
-        """Placeholder confirm action — balance side-effects come in Phase 3."""
+        """Confirm a draft incoming fund.
+
+        Sets state to 'confirmed'.  The fund.account computed field
+        _compute_total_received will then include this amount and
+        unassigned_balance will increase automatically.
+        """
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(_("Only draft records can be confirmed."))
         self.write({'state': 'confirmed'})
