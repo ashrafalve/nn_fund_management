@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_fund_root" name="Fund Management"/>
+
+        <menuitem id="menu_fund_account" name="Fund Accounts" parent="menu_fund_root" action="action_fund_account"/>
+        <menuitem id="menu_fund_incoming" name="Incoming Funds" parent="menu_fund_root" action="action_fund_incoming"/>
+        <menuitem id="menu_fund_expense_head" name="Expense Heads" parent="menu_fund_root" action="action_fund_expense_head"/>
+        <menuitem id="menu_fund_budget_line" name="Budget Lines" parent="menu_fund_root" action="action_fund_budget_line"/>
+    </data>
+</odoo>

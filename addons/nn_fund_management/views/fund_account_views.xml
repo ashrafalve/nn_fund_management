@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fund_account_tree" model="ir.ui.view">
+        <field name="name">fund.account.tree</field>
+        <field name="model">fund.account</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="account_type"/>
+                <field name="company_id"/>
+                <field name="currency_id"/>
+                <field name="unassigned_balance"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_fund_account_form" model="ir.ui.view">
+        <field name="name">fund.account.form</field>
+        <field name="model">fund.account</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="account_type"/>
+                        <field name="company_id"/>
+                        <field name="currency_id"/>
+                    </group>
+                    <group string="Balances" name="balances">
+                        <field name="total_received"/>
+                        <field name="unassigned_balance"/>
+                        <field name="held_amount"/>
+                        <field name="assigned_amount"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_fund_account_search" model="ir.ui.view">
+        <field name="name">fund.account.search</field>
+        <field name="model">fund.account</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="account_type"/>
+                <field name="company_id"/>
+                <filter string="Active" domain="[('active','=',True)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_fund_account" model="ir.actions.act_window">
+        <field name="name">Fund Accounts</field>
+        <field name="res_model">fund.account</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_fund_account_search"/>
+    </record>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_fund_allocation" model="ir.sequence">
+            <field name="name">Allocation Request</field>
+            <field name="code">fund.allocation</field>
+            <field name="prefix">ALLOC</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_fund_requisition" model="ir.sequence">
+            <field name="name">Requisition</field>
+            <field name="code">fund.requisition</field>
+            <field name="prefix">REQ</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_fund_transfer" model="ir.sequence">
+            <field name="name">Fund Transfer</field>
+            <field name="code">fund.transfer</field>
+            <field name="prefix">XFR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_fund_bill" model="ir.sequence">
+            <field name="name">Fund Bill</field>
+            <field name="code">fund.bill</field>
+            <field name="prefix">BILL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -12,7 +12,14 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
 """,
     'author': 'Assessment Candidate',
     'depends': ['base', 'mail', 'project'],
-    'data': [],
+    'data': [
+        'data/ir_sequence_data.xml',
+        'views/fund_menu.xml',
+        'views/fund_account_views.xml',
+        'views/fund_expense_head_views.xml',
+        'views/fund_budget_line_views.xml',
+        'views/fund_incoming_views.xml',
+    ],
     'installable': True,
     'application': True,
 }

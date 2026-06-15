@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fund_expense_head_tree" model="ir.ui.view">
+        <field name="name">fund.expense.head.tree</field>
+        <field name="model">fund.expense.head</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_fund_expense_head_form" model="ir.ui.view">
+        <field name="name">fund.expense.head.form</field>
+        <field name="model">fund.expense.head</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="company_id"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fund_expense_head" model="ir.actions.act_window">
+        <field name="name">Expense Heads</field>
+        <field name="res_model">fund.expense.head</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

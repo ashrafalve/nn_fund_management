@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fund_budget_line_tree" model="ir.ui.view">
+        <field name="name">fund.budget.line.tree</field>
+        <field name="model">fund.budget.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="target_type"/>
+                <field name="project_id"/>
+                <field name="expense_head_id"/>
+                <field name="company_id"/>
+                <field name="available"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_fund_budget_line_form" model="ir.ui.view">
+        <field name="name">fund.budget.line.form</field>
+        <field name="model">fund.budget.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="target_type"/>
+                        <field name="project_id" attrs="{'invisible':[('target_type','!=','project')]}"/>
+                        <field name="expense_head_id" attrs="{'invisible':[('target_type','!=','expense_head')]}"/>
+                        <field name="company_id"/>
+                    </group>
+                    <group string="Balances" name="balances">
+                        <field name="total_allocated"/>
+                        <field name="available"/>
+                        <field name="requisition_hold"/>
+                        <field name="transfer_hold"/>
+                        <field name="approved_unspent"/>
+                        <field name="total_spent"/>
+                        <field name="incoming_transfers"/>
+                        <field name="outgoing_transfers"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_fund_budget_line" model="ir.actions.act_window">
+        <field name="name">Budget Lines</field>
+        <field name="res_model">fund.budget.line</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
