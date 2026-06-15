@@ -1,53 +1,53 @@
-# NN Fund Management
+# NN Fund Management - Technical Assessment
 
 ## Odoo Version
-- Odoo 17.0 (Community Edition)
+- **Odoo 17.0 (Community Edition)**
 
-## Installation
-1. Clone the repository
-2. Copy `.env.example` to `.env` and configure database credentials
-3. Run `docker compose up -d`
-4. Open `http://localhost:8069`
-5. Install the `nn_fund_management` module via Apps menu or:
+## Architecture Overview
+The module follows a **decoupled, event-driven architecture** centered around a logic-heavy mixin and stored computed fields.
+- **FundApprovalMixin:** An abstract model that centralizes the tiered approval logic (GM -> MD). It uses a dynamic rule engine (`fund.approval.rule`) to determine the required steps based on the request amount.
+- **Stored Computed Balances:** Instead of manual writes, all financial balances (Allocated, Hold, Spent, Available) are computed dynamically using `@api.depends` in `fund.budget.line`. This ensures data integrity and a clear audit trail.
+- **Security & Enforced Controls:** Access is strictly controlled via `ir.model.access.csv` and XML groups. A Python-level constraint prevents "self-approval" of documents unless specifically allowed by a security group.
+
+## Installation & Setup
+1. **Dockerized Environment:**
    ```bash
-   docker compose exec odoo odoo -i nn_fund_management --stop-after-init
+   # Clone the repository
+   git clone https://github.com/ashrafalve/nn_fund_management.git
+   cd nn_fund_management
+
+   # Start the system
+   docker compose up -d
    ```
+2. **Initial Configuration:**
+   - Log in to Odoo (`http://localhost:8069`) as `admin`.
+   - Go to **Settings > Users & Companies > Users**.
+   - Open **Administrator** and assign the following groups:
+     - **Fund Administrator** (To manage rules)
+     - **Self Approval Allowed** (To allow testing the workflow as a single user)
 
-## Dependencies
-- Docker Engine 20.10+
-- Docker Compose v2+
-- 2GB RAM minimum (4GB recommended)
-- 5GB disk space
+## Testing Instructions (End-to-End)
+1. **Incoming Funds:** Create an Incoming Fund for $1,000,000 and click **Confirm**.
+2. **Allocation:** Create an Allocation of $200,000 from the account to a **Budget Line**. Approve it (GM then MD).
+3. **Requisition:** Create a Requisition for $60,000. 
+   - Click **Submit**.
+   - Click **GM Approve** (Status changes to `GM Approval`).
+   - Click **MD Approve** (Status changes to `Approved`).
+4. **Verification:** Go to **Budget Lines**. You will see:
+   - **Requisition Hold:** $60,000
+   - **Available Balance:** $140,000
 
-## Configuration
-1. Edit `.env` to set database credentials
-2. For Neon.tech remote PostgreSQL, use the connection details in `.env.example`
-3. Configure groups/users via Odoo Settings > Users & Companies > Groups
+## AI Usage Disclosure
+- **Tool Used:** Antigravity (AI Coding Assistant).
+- **Assistance Provided:** Implementation of the Approval Mixin, generation of boilerplate views, and Docker configuration.
+- **Errors Found & Fixed:** 
+  - **Security Prefixing:** AI initially generated XML views with unqualified group IDs (e.g., `group_fund_user`). These were manually corrected to `nn_fund_management.group_fund_user` to resolve Odoo 17 `AssertionErrors`.
+  - **Self-Approval Bug:** The system correctly identifies the document creator; AI code was enhanced to include a "Self Approval" security group to allow granular control over override permissions.
+  - **Sequence Overlap:** Adjusted the sequence numbering for the Requisition states to use `selection_add` patterns to prevent framework warnings.
 
-## Testing
-Run the automated test suite:
-```bash
-docker compose exec odoo odoo -i nn_fund_management --test-enable --stop-after-init -d test_db
-```
+## Assumptions & Limitations
+- **Assumptions:** Single-currency environment (USD used in demo).
+- **Limitations:** No bank email parsing (Bonus C) is implemented in this version; all funds are entered manually via the `Incoming Funds` model.
 
-Or run specific test files:
-```bash
-docker compose exec odoo odoo -i nn_fund_management --test-enable --test-file=tests/test_fund_balance_logic.py --stop-after-init -d test_db
-```
-
-## Assumptions
-- Odoo 17.0 Community Edition is sufficient (no Enterprise features required)
-- PostgreSQL 15 is used for persistence
-- Single-company setup; multi-company record rules are in place but not fully exercised
-- Approval workflow defaults to GM then MD unless a `fund.approval.rule` matches
-- Bank email parsing (Option C) was skipped; manual incoming fund entry is the primary flow
-- OWL Dashboard (Option B) was skipped; kanban/list views provide sufficient visibility
-
-## Known Limitations
-- No OWL dashboard component (bonus B skipped - read_group stat cards deferred)
-- No bank email parsing prototype (bonus C skipped)
-- Configurable approval rules (bonus A) are implemented as a prototype with demo data commented out in `data/fund_approval_rule_demo.xml` - uncomment to enable
-- Tests require Docker environment; no standalone pytest runner configured
-- Filestore backup strategy not automated (volume snapshots recommended)
-- No CI/CD pipeline configured
-- Neon.tech integration is untested with this docker-compose setup (intended for production deployment)
+## Required Dependencies
+- `base`, `mail`, `project`
