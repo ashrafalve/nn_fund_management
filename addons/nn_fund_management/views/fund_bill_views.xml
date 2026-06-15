@@ -25,11 +25,11 @@
                     <button name="action_post" string="Post" type="object"
                             class="btn-primary"
                             invisible="state != 'draft'"
-                            groups="group_fund_user,group_fund_administrator"/>
+                            groups="nn_fund_management.group_fund_user,nn_fund_management.group_fund_administrator"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             class="btn-danger"
                             invisible="state in ('draft', 'cancelled')"
-                            groups="group_fund_administrator"/>
+                            groups="nn_fund_management.group_fund_administrator"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

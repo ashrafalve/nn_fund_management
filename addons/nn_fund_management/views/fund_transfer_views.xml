@@ -27,27 +27,27 @@
                     <button name="action_submit" string="Submit" type="object"
                             class="btn-primary"
                             invisible="state not in ('draft',)"
-                            groups="group_fund_user,group_fund_administrator"/>
+                            groups="nn_fund_management.group_fund_user,nn_fund_management.group_fund_administrator"/>
                     <button name="action_gm_approve" string="GM Approve" type="object"
                             class="btn-success"
                             invisible="state != 'submitted'"
-                            groups="group_gm_approver,group_fund_administrator"/>
+                            groups="nn_fund_management.group_gm_approver,nn_fund_management.group_fund_administrator"/>
                     <button name="action_reject" string="GM Reject" type="object"
                             class="btn-danger"
                             invisible="state != 'submitted'"
-                            groups="group_gm_approver,group_fund_administrator"/>
+                            groups="nn_fund_management.group_gm_approver,nn_fund_management.group_fund_administrator"/>
                     <button name="action_md_approve" string="MD Approve" type="object"
                             class="btn-success"
                             invisible="state != 'gm_approval'"
-                            groups="group_md_approver,group_fund_administrator"/>
+                            groups="nn_fund_management.group_md_approver,nn_fund_management.group_fund_administrator"/>
                     <button name="action_reject" string="MD Reject" type="object"
                             class="btn-danger"
                             invisible="state != 'gm_approval'"
-                            groups="group_md_approver,group_fund_administrator"/>
+                            groups="nn_fund_management.group_md_approver,nn_fund_management.group_fund_administrator"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             class="btn-secondary"
                             invisible="state not in ('draft', 'submitted', 'gm_approval')"
-                            groups="group_fund_administrator"/>
+                            groups="nn_fund_management.group_fund_administrator"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

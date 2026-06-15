@@ -28,6 +28,7 @@
         'views/fund_transfer_views.xml',
         'views/fund_approval_rule_views.xml',
         'views/fund_menu.xml',
+        'data/fund_approval_rule_demo.xml',
     ],
     'demo': [],
     'test': [],

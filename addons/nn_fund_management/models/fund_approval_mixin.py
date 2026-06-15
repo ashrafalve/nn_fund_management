@@ -92,9 +92,9 @@ class FundApprovalMixin(models.AbstractModel):
         self.ensure_one()
         user = self.env.user
         group_map = {
-            'gm': 'fund.group_gm_approver',
-            'md': 'fund.group_md_approver',
-            'other': 'fund.group_other_approver',
+            'gm': 'nn_fund_management.group_gm_approver',
+            'md': 'nn_fund_management.group_md_approver',
+            'other': 'nn_fund_management.group_other_approver',
         }
         required_group = group_map.get(level)
         if not required_group:
@@ -106,7 +106,7 @@ class FundApprovalMixin(models.AbstractModel):
             ) % level.upper())
 
         # Self-approval guard
-        if user.has_group('fund.group_self_approval_allowed'):
+        if user.has_group('nn_fund_management.group_self_approval_allowed'):
             return True
 
         creator = self.env.user

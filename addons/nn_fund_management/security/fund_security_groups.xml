@@ -32,5 +32,13 @@
                 (4, ref('group_md_approver'))
             ]"/>
         </record>
+        <record id="group_other_approver" model="res.groups">
+            <field name="name">Other Approver</field>
+            <field name="category_id" ref="module_category_fund_management"/>
+        </record>
+        <record id="group_self_approval_allowed" model="res.groups">
+            <field name="name">Self Approval Allowed</field>
+            <field name="category_id" ref="module_category_fund_management"/>
+        </record>
     </data>
 </odoo>

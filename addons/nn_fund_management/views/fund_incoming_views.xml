@@ -25,7 +25,7 @@
                     <button name="action_confirm" string="Confirm" type="object"
                             class="btn-primary"
                             invisible="state != 'draft'"
-                            groups="group_finance_user,base.group_system"/>
+                            groups="nn_fund_management.group_finance_user,base.group_system"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

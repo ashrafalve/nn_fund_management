@@ -46,5 +46,5 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_fund_approval_rule" name="Approval Rules" parent="menu_fund_configuration" action="action_fund_approval_rule" groups="group_fund_administrator"/>
+    <menuitem id="menu_fund_approval_rule" name="Approval Rules" parent="menu_fund_configuration" action="action_fund_approval_rule" groups="nn_fund_management.group_fund_administrator"/>
 </odoo>
