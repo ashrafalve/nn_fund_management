@@ -44,3 +44,9 @@ access_fund_approval_line_finance,fund.approval.line.finance,model_fund_approval
 access_fund_approval_line_gm,fund.approval.line.gm,model_fund_approval_line,fund.group_gm_approver,1,0,0,0
 access_fund_approval_line_md,fund.approval.line.md,model_fund_approval_line,fund.group_md_approver,1,0,0,0
 access_fund_approval_line_admin,fund.approval.line.admin,model_fund_approval_line,fund.group_fund_administrator,1,1,1,1
+
+access_fund_approval_rule_fund_user,fund.approval.rule.fund.user,model_fund_approval_rule,fund.group_fund_user,1,0,0,0
+access_fund_approval_rule_finance,fund.approval.rule.finance,model_fund_approval_rule,fund.group_finance_user,1,0,0,0
+access_fund_approval_rule_gm,fund.approval.rule.gm,model_fund_approval_rule,fund.group_gm_approver,1,0,0,0
+access_fund_approval_rule_md,fund.approval.rule.md,model_fund_approval_rule,fund.group_md_approver,1,0,0,0
+access_fund_approval_rule_admin,fund.approval.rule.admin,model_fund_approval_rule,fund.group_fund_administrator,1,1,1,1

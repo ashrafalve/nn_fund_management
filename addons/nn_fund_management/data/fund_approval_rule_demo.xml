@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- PRODUCTION SEED: Commented out.  Uncomment to seed demo rules. -->
+        <!--
+        <record id="rule_allocation_tier1" model="fund.approval.rule">
+            <field name="name">Allocation: Small (GM Only)</field>
+            <field name="request_type">allocation</field>
+            <field name="min_amount">0</field>
+            <field name="max_amount">50000</field>
+            <field name="gm_required">True</field>
+            <field name="md_required">False</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="rule_allocation_tier2" model="fund.approval.rule">
+            <field name="name">Allocation: Medium (GM + MD)</field>
+            <field name="request_type">allocation</field>
+            <field name="min_amount">50001</field>
+            <field name="max_amount">200000</field>
+            <field name="gm_required">True</field>
+            <field name="md_required">True</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="rule_allocation_tier3" model="fund.approval.rule">
+            <field name="name">Allocation: Large (GM + MD)</field>
+            <field name="request_type">allocation</field>
+            <field name="min_amount">200001</field>
+            <field name="max_amount">0</field>
+            <field name="gm_required">True</field>
+            <field name="md_required">True</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="rule_requisition_tier1" model="fund.approval.rule">
+            <field name="name">Requisition: Small (GM Only)</field>
+            <field name="request_type">requisition</field>
+            <field name="min_amount">0</field>
+            <field name="max_amount">50000</field>
+            <field name="gm_required">True</field>
+            <field name="md_required">False</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="rule_requisition_tier2" model="fund.approval.rule">
+            <field name="name">Requisition: Medium (GM + MD)</field>
+            <field name="request_type">requisition</field>
+            <field name="min_amount">50001</field>
+            <field name="max_amount">200000</field>
+            <field name="gm_required">True</field>
+            <field name="md_required">True</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="rule_transfer_tier1" model="fund.approval.rule">
+            <field name="name">Transfer: Small (GM Only)</field>
+            <field name="request_type">transfer</field>
+            <field name="min_amount">0</field>
+            <field name="max_amount">50000</field>
+            <field name="gm_required">True</field>
+            <field name="md_required">False</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="rule_transfer_tier2" model="fund.approval.rule">
+            <field name="name">Transfer: Medium (GM + MD)</field>
+            <field name="request_type">transfer</field>
+            <field name="min_amount">50001</field>
+            <field name="max_amount">200000</field>
+            <field name="gm_required">True</field>
+            <field name="md_required">True</field>
+            <field name="sequence">2</field>
+        </record>
+        -->
+    </data>
+</odoo>

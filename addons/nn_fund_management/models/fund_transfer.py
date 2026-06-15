@@ -3,28 +3,28 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class FundTransfer(models.Model):
-    """Fund transfer between budget lines.
+    """Prototype: Configurable approval rules via fund.approval.rule.
+
+    _approval_request_type = 'transfer' maps this model to rules.
 
     Workflow (via inherited fund.approval.mixin):
         draft -> submitted -> gm_approval -> md_approval -> approved
                                            -> rejected / cancelled
 
     Balance side-effects (computed fields react to state changes):
-        - submit:   amount deducted from source.available → source.transfer_hold
+        - submit:   amount deducted from source.available -> source.transfer_hold
                     (blocked if amount > source.available)
         - approve:  source.transfer_hold cleared, destination.total_allocated /
                     destination.available increased by amount, source.outgoing /
                     destination.incoming records updated
-        - reject / cancel: source.transfer_hold released → source.available
+        - reject / cancel: source.transfer_hold released -> source.available
     """
 
     _name = 'fund.transfer'
     _description = 'Fund Transfer'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _approval_request_type = 'transfer'
 
-    # ------------------------------------------------------------------ #
-    # Sequence & identity
-    # ------------------------------------------------------------------ #
     transfer_number = fields.Char(
         string='Transfer Number', required=True, readonly=True, copy=False,
         default=lambda self: self.env['ir.sequence'].next_by_code('fund.transfer')
@@ -57,9 +57,6 @@ class FundTransfer(models.Model):
         default=lambda self: self.env.company.currency_id
     )
 
-    # ------------------------------------------------------------------ #
-    # Approval workflow state
-    # ------------------------------------------------------------------ #
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -70,9 +67,6 @@ class FundTransfer(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', required=True, default='draft', tracking=True)
 
-    # ------------------------------------------------------------------ #
-    # Constraint: source and destination must differ
-    # ------------------------------------------------------------------ #
     @api.constrains('source_budget_line_id', 'destination_budget_line_id')
     def _check_source_destination_different(self):
         for transfer in self:
@@ -82,9 +76,6 @@ class FundTransfer(models.Model):
                         "Source and Destination Budget Lines must be different."
                     ))
 
-    # ------------------------------------------------------------------ #
-    # Pre-submit guard: block if amount > source.available
-    # ------------------------------------------------------------------ #
     @api.constrains('amount', 'source_budget_line_id', 'state')
     def _check_sufficient_source_available(self):
         for transfer in self:
@@ -96,28 +87,16 @@ class FundTransfer(models.Model):
                         "Available: %s, Transfer Amount: %s."
                     ) % (source.name, source.available, transfer.amount))
 
-    # ------------------------------------------------------------------ #
-    # Approval mixin hooks
-    # ------------------------------------------------------------------ #
     def _on_submit(self, **kwargs):
-        """Hold amount from source.available → source.transfer_hold.
-
-        No direct write — state change drives the computed fields.
-        """
+        """Hold amount from source.available -> source.transfer_hold."""
         self.ensure_one()
 
     def _on_gm_approve(self, **kwargs):
-        """Hold persists — progressing toward final approval."""
+        """Hold persists - progressing toward final approval."""
         self.ensure_one()
 
     def _on_md_approve(self, **kwargs):
-        """Final approval — transfer is executed.
-
-        The state transition to 'approved' automatically:
-        - clears source.transfer_hold (hold states no longer include 'approved')
-        - increases destination.total_allocated / destination.available
-        - updates source.outgoing_transfers / destination.incoming_transfers
-        """
+        """Final approval - transfer is executed."""
         self.ensure_one()
 
     def _on_reject(self, **kwargs):
@@ -125,7 +104,7 @@ class FundTransfer(models.Model):
         self.ensure_one()
 
     def _on_cancel(self, **kwargs):
-        """Cancel — release any hold on source."""
+        """Cancel - release any hold on source."""
         self.ensure_one()
 
     def unlink(self):

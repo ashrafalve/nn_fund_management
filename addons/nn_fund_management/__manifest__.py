@@ -9,6 +9,10 @@ NN Fund Management
 Comprehensive fund management module for handling incoming funds,
 budget allocations, requisitions, billing, and fund transfers.
 Includes multi-level approval workflows (GM / MD) and full audit trail.
+
+PROTOTYPE: Configurable approval rules (fund.approval.rule) are implemented
+but demo data is commented out.  To enable the prototype, uncomment the
+records in data/fund_approval_rule_demo.xml and restart Odoo.
 """,
     'author': 'Assessment Candidate',
     'depends': ['base', 'mail', 'project'],
@@ -17,6 +21,7 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'security/fund_security_rules.xml',
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
+        'data/fund_approval_rule_demo.xml',
         'views/fund_menu.xml',
         'views/fund_account_views.xml',
         'views/fund_expense_head_views.xml',
@@ -26,6 +31,7 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'views/fund_requisition_views.xml',
         'views/fund_bill_views.xml',
         'views/fund_transfer_views.xml',
+        'views/fund_approval_rule_views.xml',
     ],
     'demo': [],
     'test': [
@@ -35,6 +41,7 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'tests/test_fund_transfer.py',
         'tests/test_fund_security.py',
         'tests/test_fund_end_to_end_demo.py',
+        'tests/test_fund_approval_rule.py',
     ],
     'installable': True,
     'application': True,

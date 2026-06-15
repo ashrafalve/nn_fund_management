@@ -3,9 +3,13 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class FundAllocation(models.Model):
-    """Fund allocation request - moves money from a fund account to a budget line.
+    """Prototype configurable approval rule target for allocations.
 
-    Workflow (via inherited fund.approval.mixin):
+    Allocation requests inherit fund.approval.mixin.  The mixin looks up
+    fund.approval.rule records matching this model's request type
+    ('allocation') and dynamically determines the required approval steps.
+
+    Workflow:
         draft -> submitted -> gm_approval -> md_approval -> approved
                                            -> rejected / cancelled
 
@@ -18,10 +22,8 @@ class FundAllocation(models.Model):
     _name = 'fund.allocation'
     _description = 'Fund Allocation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _approval_request_type = 'allocation'
 
-    # ------------------------------------------------------------------ #
-    # Sequence & identity
-    # ------------------------------------------------------------------ #
     request_number = fields.Char(
         string='Request Number', required=True, readonly=True, copy=False,
         default=lambda self: self.env['ir.sequence'].next_by_code('fund.allocation')
@@ -55,9 +57,6 @@ class FundAllocation(models.Model):
         default=lambda self: self.env.company.currency_id
     )
 
-    # ------------------------------------------------------------------ #
-    # Approval workflow (inherited from fund.approval.mixin)
-    # ------------------------------------------------------------------ #
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -68,16 +67,9 @@ class FundAllocation(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', required=True, default='draft', tracking=True)
 
-    # ------------------------------------------------------------------ #
-    # Pre-transition guard
-    # ------------------------------------------------------------------ #
     @api.constrains('amount', 'fund_account_id', 'state')
     def _check_sufficient_unassigned_balance(self):
-        """Block submit/approval if amount > fund account unassigned_balance.
-
-        This is checked at submit time.  The mixin's state guard ensures
-        the check only fires when transitioning to submitted.
-        """
+        """Block submit/approval if amount exceeds fund account unassigned balance."""
         for rec in self:
             if rec.state == 'draft' and rec.fund_account_id and rec.amount:
                 if rec.amount > rec.fund_account_id.unassigned_balance:
@@ -90,27 +82,16 @@ class FundAllocation(models.Model):
                         rec.amount,
                     ))
 
-    # ------------------------------------------------------------------ #
-    # Approval mixin hooks
-    #
-    # IMPORTANT: These hooks only mutate state via the mixin methods.
-    # The computed fields on fund.account and fund.budget.line react
-    # automatically to the state change — no direct balance writes here.
-    # ------------------------------------------------------------------ #
     def _on_submit(self, **kwargs):
-        """Mark a draft allocation as submitted.
-
-        Side-effect: funds move from fund_account.unassigned_balance to
-        fund_account.held_amount (via fund.allocation state change).
-        """
+        """Mark a draft allocation as submitted."""
         self.ensure_one()
 
     def _on_gm_approve(self, **kwargs):
-        """GM approved — moving toward final approval."""
+        """GM approved -- moving toward final approval."""
         self.ensure_one()
 
     def _on_md_approve(self, **kwargs):
-        """Final approval — money becomes available on the budget line."""
+        """Final approval -- money becomes available on the budget line."""
         self.ensure_one()
 
     def _on_reject(self, **kwargs):
@@ -118,7 +99,7 @@ class FundAllocation(models.Model):
         self.ensure_one()
 
     def _on_cancel(self, **kwargs):
-        """Cancel from draft/submitted/gm_approval — release any holds."""
+        """Cancel from draft/submitted/gm_approval -- release any holds."""
         self.ensure_one()
 
     def unlink(self):

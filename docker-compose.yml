@@ -1,35 +1,51 @@
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
-      POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo
-      POSTGRES_DB: odoo
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+      POSTGRES_DB: ${POSTGRES_DB:-odoo}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   odoo:
     image: odoo:17.0
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      - HOST=db
-      - USER=odoo
-      - PASSWORD=odoo
+      - HOST=${ODOO_DB_HOST:-db}
+      - USER=${ODOO_DB_USER:-odoo}
+      - PASSWORD=${ODOO_DB_PASSWORD:-odoo}
     volumes:
-      - ./addons:/mnt/extra-addons
+      - ./addons:/mnt/extra-addons:ro
+      - odoo_filestore:/var/lib/odoo/filestore
     ports:
       - "8069:8069"
     command: >
       odoo
       --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
-      --db_host=db
-      --db_user=odoo
-      --db_password=odoo
+      --db_host=${ODOO_DB_HOST:-db}
+      --db_user=${ODOO_DB_USER:-odoo}
+      --db_password=${ODOO_DB_PASSWORD:-odoo}
       --without-demo=all
       --log-level=info
+      --proxy-mode
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+  odoo_filestore:

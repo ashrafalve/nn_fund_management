@@ -34,6 +34,46 @@ class FundApprovalMixin(models.AbstractModel):
     )
 
     # ------------------------------------------------------------------ #
+    # Dynamic rule lookup (prototype — configurable approval tiers)
+    #
+    # Concrete models can define a class attribute `_approval_request_type`
+    # matching the `request_type` selection on fund.approval.rule (e.g.
+    # 'allocation', 'requisition', 'transfer').  If no rule matches the
+    # record's company and amount range, the mixin falls back to the
+    # standard GM -> MD two-step approval.
+    # ------------------------------------------------------------------ #
+    _approval_request_type = None
+
+    def _get_applicable_rule(self):
+        """Find the active approval rule matching this record's type, company and amount."""
+        self.ensure_one()
+        if not self._approval_request_type:
+            return False
+        amount = getattr(self, 'amount', 0.0) or getattr(self, 'requested_amount', 0.0) or 0.0
+        domain = [
+            ('active', '=', True),
+            ('request_type', '=', self._approval_request_type),
+            ('company_id', 'in', [False, self.company_id.id]),
+            ('min_amount', '<=', amount),
+        ]
+        # Max amount can be empty (no upper bound)
+        rules = self.env['fund.approval.rule'].search(domain)
+        matching = rules.filtered(
+            lambda r: not r.max_amount or amount <= r.max_amount
+        )
+        # Return highest priority (lowest sequence)
+        return matching.sorted('sequence')[0] if matching else False
+
+    def _get_required_approval_levels(self):
+        """Return ordered list of approval levels required for this record."""
+        self.ensure_one()
+        rule = self._get_applicable_rule()
+        if rule:
+            return rule.get_required_levels()
+        # Default fallback: GM then MD
+        return ['gm', 'md']
+
+    # ------------------------------------------------------------------ #
     # Transition helpers
     # ------------------------------------------------------------------ #
     def _check_approver_allowed(self, level):
@@ -113,14 +153,28 @@ class FundApprovalMixin(models.AbstractModel):
         self.message_post(body=msg)
 
     def action_gm_approve(self, comment=None):
-        """Submitted -> GM Approval."""
+        """Submitted -> GM Approval, or directly to Approved if MD not required."""
         self.ensure_one()
-        if self.state != 'submitted':
-            raise UserError(_("Only submitted records can be approved by GM."))
-        self._check_approver_allowed('gm')
-        self._on_gm_approve(comment=comment)
-        self.state = 'gm_approval'
-        self._append_approval_line('gm', 'approved', comment)
+        required_levels = self._get_required_approval_levels()
+        is_gm_only = 'md' not in required_levels
+
+        if is_gm_only:
+            # GM-only approval: submitted -> approved directly
+            if self.state != 'submitted':
+                raise UserError(_("Only submitted records can be approved by GM."))
+            self._check_approver_allowed('gm')
+            self._on_gm_approve(comment=comment)
+            self.state = 'approved'
+            self._append_approval_line('gm', 'approved', comment)
+        else:
+            # Standard two-step: submitted -> gm_approval
+            if self.state != 'submitted':
+                raise UserError(_("Only submitted records can be approved by GM."))
+            self._check_approver_allowed('gm')
+            self._on_gm_approve(comment=comment)
+            self.state = 'gm_approval'
+            self._append_approval_line('gm', 'approved', comment)
+
         msg = _("GM approved by %s.") % self.env.user.name
         if comment:
             msg += _(" Comment: %s") % comment
@@ -129,6 +183,9 @@ class FundApprovalMixin(models.AbstractModel):
     def action_md_approve(self, comment=None):
         """GM Approval -> Approved."""
         self.ensure_one()
+        required_levels = self._get_required_approval_levels()
+        if 'md' not in required_levels:
+            raise UserError(_("MD approval is not required for this request."))
         if self.state != 'gm_approval':
             raise UserError(_("Only GM-approved records can be approved by MD."))
         self._check_approver_allowed('md')

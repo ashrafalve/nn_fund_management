@@ -72,6 +72,16 @@
             <field name="perm_create" eval="1"/>
             <field name="perm_unlink" eval="1"/>
         </record>
+        <record id="rule_fund_approval_rule_multi_company" model="ir.rule">
+            <field name="name">Approval Rule: Multi-Company</field>
+            <field name="model_id" ref="model_fund_approval_rule"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
 
         <!-- Ownership-based record rules -->
         <!-- Fund User sees own records; Finance/Admin see all -->
