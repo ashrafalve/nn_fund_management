@@ -22,7 +22,7 @@ class FundTransfer(models.Model):
 
     _name = 'fund.transfer'
     _description = 'Fund Transfer'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['fund.approval.mixin']
     _approval_request_type = 'transfer'
 
     transfer_number = fields.Char(

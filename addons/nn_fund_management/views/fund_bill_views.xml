@@ -24,12 +24,12 @@
                 <header>
                     <button name="action_post" string="Post" type="object"
                             class="btn-primary"
-                            attrs="{'invisible':[('state','!=','draft')]}"
-                            groups="fund.group_fund_user,fund.group_fund_administrator"/>
+                            invisible="state != 'draft'"
+                            groups="group_fund_user,group_fund_administrator"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             class="btn-danger"
-                            attrs="{'invisible':[('state','in',('draft','cancelled'))]}"
-                            groups="fund.group_fund_administrator"/>
+                            invisible="state in ('draft', 'cancelled')"
+                            groups="group_fund_administrator"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -58,12 +58,6 @@
                 <field name="budget_line_id"/>
                 <field name="state"/>
                 <field name="date"/>
-                <filter string="Draft" domain="[('state','=','draft')]"/>
-                <filter string="Posted" domain="[('state','=','posted')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="State" context="{'group_by':'state'}"/>
-                    <filter string="Budget Line" context="{'group_by':'budget_line_id'}"/>
-                </group>
             </search>
         </field>
     </record>

@@ -20,7 +20,7 @@ class FundRequisition(models.Model):
 
     _name = 'fund.requisition'
     _description = 'Fund Requisition'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['fund.approval.mixin']
     _approval_request_type = 'requisition'
 
     requisition_number = fields.Char(

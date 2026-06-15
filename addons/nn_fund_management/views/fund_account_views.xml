@@ -4,9 +4,7 @@
         <field name="name">fund.account.tree</field>
         <field name="model">fund.account</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state == 'draft'"
-                  decoration-success="state == 'confirmed'"
-                  decoration-danger="state == 'cancelled'">
+            <tree decoration-warning="unassigned_balance &lt; 0">
                 <field name="name"/>
                 <field name="account_type"/>
                 <field name="company_id"/>
@@ -48,11 +46,6 @@
                 <field name="name"/>
                 <field name="account_type"/>
                 <field name="company_id"/>
-                <filter string="Active" domain="[('active','=',True)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Account Type" context="{'group_by':'account_type'}"/>
-                    <filter string="Company" context="{'group_by':'company_id'}"/>
-                </group>
             </search>
         </field>
     </record>

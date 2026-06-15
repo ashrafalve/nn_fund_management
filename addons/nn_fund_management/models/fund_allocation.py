@@ -21,7 +21,7 @@ class FundAllocation(models.Model):
 
     _name = 'fund.allocation'
     _description = 'Fund Allocation'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['fund.approval.mixin']
     _approval_request_type = 'allocation'
 
     request_number = fields.Char(

@@ -76,8 +76,8 @@
                     <group>
                         <field name="name"/>
                         <field name="target_type"/>
-                        <field name="project_id" attrs="{'invisible':[('target_type','!=','project')]}"/>
-                        <field name="expense_head_id" attrs="{'invisible':[('target_type','!=','expense_head')]}"/>
+                        <field name="project_id" invisible="target_type != 'project'"/>
+                        <field name="expense_head_id" invisible="target_type != 'expense_head'"/>
                         <field name="company_id"/>
                         <field name="currency_id" invisible="1"/>
                     </group>
@@ -106,11 +106,6 @@
                 <field name="project_id"/>
                 <field name="expense_head_id"/>
                 <field name="company_id"/>
-                <filter string="Available &gt; 0" domain="[('available','&gt;',0)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Target Type" context="{'group_by':'target_type'}"/>
-                    <filter string="Company" context="{'group_by':'company_id'}"/>
-                </group>
             </search>
         </field>
     </record>

@@ -11,7 +11,7 @@
         <menuitem id="menu_fund_bill" name="Bills" parent="menu_fund_root" action="action_fund_bill"/>
 
         <menuitem id="menu_fund_configuration" name="Configuration" parent="menu_fund_root"/>
-        <menuitem id="menu_fund_expense_head" name="Expense Heads" parent="menu_fund_configuration" action="action_fund_expense_head" groups="fund.group_fund_administrator"/>
+        <menuitem id="menu_fund_expense_head" name="Expense Heads" parent="menu_fund_configuration" action="action_fund_expense_head" groups="group_fund_administrator"/>
         <menuitem id="menu_fund_budget_line" name="Budget Lines" parent="menu_fund_configuration" action="action_fund_budget_line"/>
 
         <menuitem id="menu_fund_approvals" name="Approvals" parent="menu_fund_root"/>

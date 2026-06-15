@@ -25,25 +25,21 @@ services:
       - HOST=${ODOO_DB_HOST:-db}
       - USER=${ODOO_DB_USER:-odoo}
       - PASSWORD=${ODOO_DB_PASSWORD:-odoo}
+      - ODOO_ADDONS=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
     volumes:
       - ./addons:/mnt/extra-addons:ro
-      - odoo_filestore:/var/lib/odoo/filestore
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
     ports:
       - "8069:8069"
     command: >
       odoo
-      --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
       --db_host=${ODOO_DB_HOST:-db}
       --db_user=${ODOO_DB_USER:-odoo}
       --db_password=${ODOO_DB_PASSWORD:-odoo}
+      --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
       --without-demo=all
       --log-level=info
       --proxy-mode
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     restart: unless-stopped
 
 volumes:

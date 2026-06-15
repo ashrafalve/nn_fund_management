@@ -26,28 +26,28 @@
                 <header>
                     <button name="action_submit" string="Submit" type="object"
                             class="btn-primary"
-                            attrs="{'invisible':[('state','not in',('draft',))]}"
-                            groups="fund.group_fund_user,fund.group_fund_administrator"/>
+                            invisible="state not in ('draft',)"
+                            groups="group_fund_user,group_fund_administrator"/>
                     <button name="action_gm_approve" string="GM Approve" type="object"
                             class="btn-success"
-                            attrs="{'invisible':[('state','!=','submitted')]}"
-                            groups="fund.group_gm_approver,fund.group_fund_administrator"/>
+                            invisible="state != 'submitted'"
+                            groups="group_gm_approver,group_fund_administrator"/>
                     <button name="action_reject" string="GM Reject" type="object"
                             class="btn-danger"
-                            attrs="{'invisible':[('state','!=','submitted')]}"
-                            groups="fund.group_gm_approver,fund.group_fund_administrator"/>
+                            invisible="state != 'submitted'"
+                            groups="group_gm_approver,group_fund_administrator"/>
                     <button name="action_md_approve" string="MD Approve" type="object"
                             class="btn-success"
-                            attrs="{'invisible':[('state','!=','gm_approval')]}"
-                            groups="fund.group_md_approver,fund.group_fund_administrator"/>
+                            invisible="state != 'gm_approval'"
+                            groups="group_md_approver,group_fund_administrator"/>
                     <button name="action_reject" string="MD Reject" type="object"
                             class="btn-danger"
-                            attrs="{'invisible':[('state','!=','gm_approval')]}"
-                            groups="fund.group_md_approver,fund.group_fund_administrator"/>
+                            invisible="state != 'gm_approval'"
+                            groups="group_md_approver,group_fund_administrator"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             class="btn-secondary"
-                            attrs="{'invisible':[('state','not in',('draft','submitted','gm_approval'))]}"
-                            groups="fund.group_fund_administrator"/>
+                            invisible="state not in ('draft', 'submitted', 'gm_approval')"
+                            groups="group_fund_administrator"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -81,11 +81,6 @@
                 <field name="destination_budget_line_id"/>
                 <field name="requested_by"/>
                 <field name="request_date"/>
-                <filter string="My Requests" domain="[('requested_by','=',uid)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="State" context="{'group_by':'state'}"/>
-                    <filter string="Source" context="{'group_by':'source_budget_line_id'}"/>
-                </group>
             </search>
         </field>
     </record>
