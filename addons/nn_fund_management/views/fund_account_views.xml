@@ -4,12 +4,17 @@
         <field name="name">fund.account.tree</field>
         <field name="model">fund.account</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'draft'"
+                  decoration-success="state == 'confirmed'"
+                  decoration-danger="state == 'cancelled'">
                 <field name="name"/>
                 <field name="account_type"/>
                 <field name="company_id"/>
                 <field name="currency_id"/>
-                <field name="unassigned_balance"/>
+                <field name="total_received" widget="monetary"/>
+                <field name="unassigned_balance" widget="monetary"/>
+                <field name="held_amount" widget="monetary"/>
+                <field name="assigned_amount" widget="monetary"/>
             </tree>
         </field>
     </record>
@@ -26,10 +31,10 @@
                         <field name="currency_id"/>
                     </group>
                     <group string="Balances" name="balances">
-                        <field name="total_received"/>
-                        <field name="unassigned_balance"/>
-                        <field name="held_amount"/>
-                        <field name="assigned_amount"/>
+                        <field name="total_received" readonly="1"/>
+                        <field name="unassigned_balance" readonly="1"/>
+                        <field name="held_amount" readonly="1"/>
+                        <field name="assigned_amount" readonly="1"/>
                     </group>
                 </sheet>
             </form>
@@ -44,13 +49,17 @@
                 <field name="account_type"/>
                 <field name="company_id"/>
                 <filter string="Active" domain="[('active','=',True)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Account Type" context="{'group_by':'account_type'}"/>
+                    <filter string="Company" context="{'group_by':'company_id'}"/>
+                </group>
             </search>
         </field>
     </record>
     <record id="action_fund_account" model="ir.actions.act_window">
         <field name="name">Fund Accounts</field>
         <field name="res_model">fund.account</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,kanban</field>
         <field name="search_view_id" ref="view_fund_account_search"/>
     </record>
 </odoo>

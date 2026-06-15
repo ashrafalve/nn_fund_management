@@ -4,12 +4,14 @@
         <field name="name">fund.bill.tree</field>
         <field name="model">fund.bill</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'draft'"
+                  decoration-success="state == 'posted'"
+                  decoration-danger="state == 'cancelled'">
                 <field name="bill_number"/>
                 <field name="date"/>
                 <field name="requisition_id"/>
                 <field name="budget_line_id"/>
-                <field name="amount"/>
+                <field name="amount" widget="monetary"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -22,10 +24,12 @@
                 <header>
                     <button name="action_post" string="Post" type="object"
                             class="btn-primary"
-                            attrs="{'invisible':[('state','!=','draft')]}"/>
+                            attrs="{'invisible':[('state','!=','draft')]}"
+                            groups="fund.group_fund_user,fund.group_fund_administrator"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             class="btn-danger"
-                            attrs="{'invisible':[('state','in',('draft','cancelled'))]}"/>
+                            attrs="{'invisible':[('state','in',('draft','cancelled'))]}"
+                            groups="fund.group_fund_administrator"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -37,16 +41,36 @@
                         <field name="date"/>
                         <field name="requisition_id"/>
                         <field name="budget_line_id" readonly="1"/>
-                        <field name="amount"/>
+                        <field name="amount" widget="monetary"/>
                         <field name="currency_id" invisible="1"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
+    <record id="view_fund_bill_search" model="ir.ui.view">
+        <field name="name">fund.bill.search</field>
+        <field name="model">fund.bill</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="bill_number"/>
+                <field name="requisition_id"/>
+                <field name="budget_line_id"/>
+                <field name="state"/>
+                <field name="date"/>
+                <filter string="Draft" domain="[('state','=','draft')]"/>
+                <filter string="Posted" domain="[('state','=','posted')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" context="{'group_by':'state'}"/>
+                    <filter string="Budget Line" context="{'group_by':'budget_line_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
     <record id="action_fund_bill" model="ir.actions.act_window">
         <field name="name">Bills</field>
         <field name="res_model">fund.bill</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_fund_bill_search"/>
     </record>
 </odoo>

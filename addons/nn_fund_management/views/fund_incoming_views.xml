@@ -4,10 +4,12 @@
         <field name="name">fund.incoming.tree</field>
         <field name="model">fund.incoming</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'draft'"
+                  decoration-success="state == 'confirmed'"
+                  decoration-danger="state == 'cancelled'">
                 <field name="date"/>
                 <field name="fund_account_id"/>
-                <field name="amount"/>
+                <field name="amount" widget="monetary"/>
                 <field name="transaction_reference"/>
                 <field name="partner_id"/>
                 <field name="state"/>
@@ -22,30 +24,51 @@
                 <header>
                     <button name="action_confirm" string="Confirm" type="object"
                             class="btn-primary"
-                            attrs="{'invisible':[('state','!=','draft')]}"/>
+                            attrs="{'invisible':[('state','!=','draft')]}"
+                            groups="fund.group_finance_user,base.group_system"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <field name="fund_account_id"/>
                         <field name="date"/>
-                        <field name="amount"/>
+                        <field name="amount" widget="monetary"/>
                         <field name="transaction_reference"/>
                         <field name="partner_id"/>
                     </group>
                     <group>
                         <field name="description"/>
                         <field name="attachment"/>
-                        <field name="company_id"/>
-                        <field name="currency_id"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
                     </group>
                 </sheet>
             </form>
+        </field>
+    </record>
+    <record id="view_fund_incoming_search" model="ir.ui.view">
+        <field name="name">fund.incoming.search</field>
+        <field name="model">fund.incoming</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="transaction_reference"/>
+                <field name="fund_account_id"/>
+                <field name="partner_id"/>
+                <field name="state"/>
+                <field name="date"/>
+                <filter string="Draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" domain="[('state','=','confirmed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Fund Account" context="{'group_by':'fund_account_id'}"/>
+                    <filter string="State" context="{'group_by':'state'}"/>
+                </group>
+            </search>
         </field>
     </record>
     <record id="action_fund_incoming" model="ir.actions.act_window">
         <field name="name">Incoming Funds</field>
         <field name="res_model">fund.incoming</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_fund_incoming_search"/>
     </record>
 </odoo>

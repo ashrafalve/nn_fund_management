@@ -4,12 +4,15 @@
         <field name="name">fund.allocation.tree</field>
         <field name="model">fund.allocation</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'draft'"
+                  decoration-warning="state in ('submitted','gm_approval')"
+                  decoration-success="state == 'approved'"
+                  decoration-muted="state in ('rejected','cancelled')">
                 <field name="request_number"/>
                 <field name="request_date"/>
                 <field name="fund_account_id"/>
                 <field name="budget_line_id"/>
-                <field name="amount"/>
+                <field name="amount" widget="monetary"/>
                 <field name="state"/>
                 <field name="requested_by"/>
             </tree>
@@ -23,19 +26,28 @@
                 <header>
                     <button name="action_submit" string="Submit" type="object"
                             class="btn-primary"
-                            attrs="{'invisible':[('state','not in',('draft',))]}"/>
+                            attrs="{'invisible':[('state','not in',('draft',))]}"
+                            groups="fund.group_fund_user,fund.group_fund_administrator"/>
                     <button name="action_gm_approve" string="GM Approve" type="object"
                             class="btn-success"
-                            attrs="{'invisible':[('state','!=','submitted')]}"/>
+                            attrs="{'invisible':[('state','!=','submitted')]}"
+                            groups="fund.group_gm_approver,fund.group_fund_administrator"/>
+                    <button name="action_reject" string="GM Reject" type="object"
+                            class="btn-danger"
+                            attrs="{'invisible':[('state','!=','submitted')]}"
+                            groups="fund.group_gm_approver,fund.group_fund_administrator"/>
                     <button name="action_md_approve" string="MD Approve" type="object"
                             class="btn-success"
-                            attrs="{'invisible':[('state','!=','gm_approval')]}"/>
-                    <button name="action_reject" string="Reject" type="object"
+                            attrs="{'invisible':[('state','!=','gm_approval')]}"
+                            groups="fund.group_md_approver,fund.group_fund_administrator"/>
+                    <button name="action_reject" string="MD Reject" type="object"
                             class="btn-danger"
-                            attrs="{'invisible':[('state','not in',('submitted','gm_approval'))]}"/>
+                            attrs="{'invisible':[('state','!=','gm_approval')]}"
+                            groups="fund.group_md_approver,fund.group_fund_administrator"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             class="btn-secondary"
-                            attrs="{'invisible':[('state','not in',('draft','submitted','gm_approval'))]}"/>
+                            attrs="{'invisible':[('state','not in',('draft','submitted','gm_approval'))]}"
+                            groups="fund.group_fund_administrator"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -47,7 +59,7 @@
                         <field name="request_date"/>
                         <field name="fund_account_id"/>
                         <field name="budget_line_id"/>
-                        <field name="amount"/>
+                        <field name="amount" widget="monetary"/>
                         <field name="currency_id" invisible="1"/>
                     </group>
                     <group>
@@ -68,7 +80,13 @@
                 <field name="state"/>
                 <field name="fund_account_id"/>
                 <field name="budget_line_id"/>
+                <field name="requested_by"/>
+                <field name="request_date"/>
                 <filter string="My Requests" domain="[('requested_by','=',uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" context="{'group_by':'state'}"/>
+                    <filter string="Budget Line" context="{'group_by':'budget_line_id'}"/>
+                </group>
             </search>
         </field>
     </record>

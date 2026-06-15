@@ -4,12 +4,15 @@
         <field name="name">fund.requisition.tree</field>
         <field name="model">fund.requisition</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state == 'draft'"
+                  decoration-warning="state in ('submitted','gm_approval','md_approval','approved')"
+                  decoration-success="state == 'approved'"
+                  decoration-muted="state in ('rejected','cancelled','closed')">
                 <field name="requisition_number"/>
                 <field name="request_date"/>
                 <field name="budget_line_id"/>
-                <field name="requested_amount"/>
-                <field name="remaining_billable_amount"/>
+                <field name="requested_amount" widget="monetary"/>
+                <field name="remaining_billable_amount" widget="monetary"/>
                 <field name="state"/>
                 <field name="requested_by"/>
             </tree>
@@ -23,22 +26,32 @@
                 <header>
                     <button name="action_submit" string="Submit" type="object"
                             class="btn-primary"
-                            attrs="{'invisible':[('state','not in',('draft',))]}"/>
+                            attrs="{'invisible':[('state','not in',('draft',))]}"
+                            groups="fund.group_fund_user,fund.group_fund_administrator"/>
                     <button name="action_gm_approve" string="GM Approve" type="object"
                             class="btn-success"
-                            attrs="{'invisible':[('state','!=','submitted')]}"/>
+                            attrs="{'invisible':[('state','!=','submitted')]}"
+                            groups="fund.group_gm_approver,fund.group_fund_administrator"/>
+                    <button name="action_reject" string="GM Reject" type="object"
+                            class="btn-danger"
+                            attrs="{'invisible':[('state','!=','submitted')]}"
+                            groups="fund.group_gm_approver,fund.group_fund_administrator"/>
                     <button name="action_md_approve" string="MD Approve" type="object"
                             class="btn-success"
-                            attrs="{'invisible':[('state','!=','gm_approval')]}"/>
-                    <button name="action_reject" string="Reject" type="object"
+                            attrs="{'invisible':[('state','!=','gm_approval')]}"
+                            groups="fund.group_md_approver,fund.group_fund_administrator"/>
+                    <button name="action_reject" string="MD Reject" type="object"
                             class="btn-danger"
-                            attrs="{'invisible':[('state','not in',('submitted','gm_approval'))]}"/>
+                            attrs="{'invisible':[('state','!=','gm_approval')]}"
+                            groups="fund.group_md_approver,fund.group_fund_administrator"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             class="btn-secondary"
-                            attrs="{'invisible':[('state','not in',('draft','submitted','gm_approval'))]}"/>
+                            attrs="{'invisible':[('state','not in',('draft','submitted','gm_approval'))]}"
+                            groups="fund.group_fund_administrator"/>
                     <button name="action_close" string="Close" type="object"
                             class="btn-warning"
-                            attrs="{'invisible':[('state','not in',('approved',))]}"/>
+                            attrs="{'invisible':[('state','not in',('approved',))]}"
+                            groups="fund.group_fund_administrator"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -50,8 +63,8 @@
                         <field name="request_date"/>
                         <field name="required_date"/>
                         <field name="budget_line_id"/>
-                        <field name="requested_amount"/>
-                        <field name="remaining_billable_amount" readonly="1"/>
+                        <field name="requested_amount" widget="monetary"/>
+                        <field name="remaining_billable_amount" readonly="1" widget="monetary"/>
                         <field name="currency_id" invisible="1"/>
                     </group>
                     <group>
@@ -63,9 +76,42 @@
             </form>
         </field>
     </record>
+    <record id="view_fund_requisition_search" model="ir.ui.view">
+        <field name="name">fund.requisition.search</field>
+        <field name="model">fund.requisition</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="requisition_number"/>
+                <field name="state"/>
+                <field name="budget_line_id"/>
+                <field name="requested_by"/>
+                <field name="request_date"/>
+                <filter string="Pending My Approval" domain="[('state','in',('submitted','gm_approval'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" context="{'group_by':'state'}"/>
+                    <filter string="Budget Line" context="{'group_by':'budget_line_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
     <record id="action_fund_requisition" model="ir.actions.act_window">
         <field name="name">Requisitions</field>
         <field name="res_model">fund.requisition</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_fund_requisition_search"/>
+    </record>
+
+    <!-- Pending Approvals filters (GM / MD) -->
+    <record id="action_fund_approval_gm" model="ir.actions.act_window">
+        <field name="name">Pending GM Approval</field>
+        <field name="res_model">fund.requisition</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','submitted')]</field>
+    </record>
+    <record id="action_fund_approval_md" model="ir.actions.act_window">
+        <field name="name">Pending MD Approval</field>
+        <field name="res_model">fund.requisition</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','gm_approval')]</field>
     </record>
 </odoo>
