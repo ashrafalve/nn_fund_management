@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fund_approval_line_fund_user,fund.approval.line.fund.user,model_fund_approval_line,base.group_user,1,0,0,0
+access_fund_approval_line_finance,fund.approval.line.finance,model_fund_approval_line,base.group_erp_manager,1,1,1,1

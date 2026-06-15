@@ -13,6 +13,7 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
     'author': 'Assessment Candidate',
     'depends': ['base', 'mail', 'project'],
     'data': [
+        'security/fund_security_groups.xml',
         'data/ir_sequence_data.xml',
         'views/fund_menu.xml',
         'views/fund_account_views.xml',
@@ -20,6 +21,8 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'views/fund_budget_line_views.xml',
         'views/fund_incoming_views.xml',
     ],
+    'demo': [],
+    'test': ['tests/test_fund_approval_mixin.py'],
     'installable': True,
     'application': True,
 }
