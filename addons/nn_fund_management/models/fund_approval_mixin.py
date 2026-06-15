@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError, UserError, AccessError
 
 class FundApprovalMixin(models.AbstractModel):
     """Abstract mixin that provides a standardized multi-level approval workflow.
@@ -61,7 +61,7 @@ class FundApprovalMixin(models.AbstractModel):
             return True
 
         if not user.has_group(required_group):
-            raise UserError(_(
+            raise AccessError(_(
                 "You do not have permission to perform %s approvals."
             ) % level.upper())
 
@@ -76,7 +76,7 @@ class FundApprovalMixin(models.AbstractModel):
             creator = self.create_uid
 
         if user.id == creator.id:
-            raise UserError(_(
+            raise AccessError(_(
                 "Self-approval is not allowed. Please ask another %s approver."
             ) % level.upper())
 

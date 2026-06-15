@@ -14,6 +14,8 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
     'depends': ['base', 'mail', 'project'],
     'data': [
         'security/fund_security_groups.xml',
+        'security/fund_security_rules.xml',
+        'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'views/fund_menu.xml',
         'views/fund_account_views.xml',
@@ -31,6 +33,7 @@ Includes multi-level approval workflows (GM / MD) and full audit trail.
         'tests/test_fund_balance_logic.py',
         'tests/test_fund_requisition_bill.py',
         'tests/test_fund_transfer.py',
+        'tests/test_fund_security.py',
     ],
     'installable': True,
     'application': True,

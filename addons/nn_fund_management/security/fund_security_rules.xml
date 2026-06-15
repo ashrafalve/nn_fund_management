@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Multi-company security for models with company_id -->
+        <record id="rule_fund_account_multi_company" model="ir.rule">
+            <field name="name">Fund Account: Multi-Company</field>
+            <field name="model_id" ref="model_fund_account"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_budget_line_multi_company" model="ir.rule">
+            <field name="name">Budget Line: Multi-Company</field>
+            <field name="model_id" ref="model_fund_budget_line"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_incoming_multi_company" model="ir.rule">
+            <field name="name">Incoming Fund: Multi-Company</field>
+            <field name="model_id" ref="model_fund_incoming"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_allocation_multi_company" model="ir.rule">
+            <field name="name">Allocation: Multi-Company</field>
+            <field name="model_id" ref="model_fund_allocation"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_requisition_multi_company" model="ir.rule">
+            <field name="name">Requisition: Multi-Company</field>
+            <field name="model_id" ref="model_fund_requisition"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_bill_multi_company" model="ir.rule">
+            <field name="name">Bill: Multi-Company</field>
+            <field name="model_id" ref="model_fund_bill"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_transfer_multi_company" model="ir.rule">
+            <field name="name">Transfer: Multi-Company</field>
+            <field name="model_id" ref="model_fund_transfer"/>
+            <field name="domain_force">[('company_id','in',company_ids)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('fund.group_fund_administrator'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!-- Ownership-based record rules -->
+        <!-- Fund User sees own records; Finance/Admin see all -->
+        <record id="rule_fund_incoming_ownership" model="ir.rule">
+            <field name="name">Incoming: Own Records</field>
+            <field name="model_id" ref="model_fund_incoming"/>
+            <field name="domain_force">[('create_uid','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('fund.group_fund_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_allocation_ownership" model="ir.rule">
+            <field name="name">Allocation: Own Records</field>
+            <field name="model_id" ref="model_fund_allocation"/>
+            <field name="domain_force">[('create_uid','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('fund.group_fund_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_requisition_ownership" model="ir.rule">
+            <field name="name">Requisition: Own Records</field>
+            <field name="model_id" ref="model_fund_requisition"/>
+            <field name="domain_force">[('create_uid','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('fund.group_fund_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+        <record id="rule_fund_transfer_ownership" model="ir.rule">
+            <field name="name">Transfer: Own Records</field>
+            <field name="model_id" ref="model_fund_transfer"/>
+            <field name="domain_force">[('create_uid','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('fund.group_fund_user'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+    </data>
+</odoo>
